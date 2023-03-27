@@ -1,0 +1,20 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BUFFER_LENGTH	user-test.c	10;"	d	file:
+CLASS_NAME	bpmp-host-proxy.c	14;"	d	file:
+DEVICE_NAME	bpmp-host-proxy.c	13;"	d	file:
+bpmp_host_proxy_class	bpmp-host-proxy.c	/^static struct class *bpmp_host_proxy_class = NULL;	\/\/\/< The device-driver class struct pointer$/;"	v	typeref:struct:class	file:
+bpmp_host_proxy_device	bpmp-host-proxy.c	/^static struct device *bpmp_host_proxy_device = NULL; \/\/\/< The device-driver device struct pointer$/;"	v	typeref:struct:device	file:
+cleanup_module	bpmp-host-proxy.c	/^void cleanup_module(void)$/;"	f
+close	bpmp-host-proxy.c	/^static int close(struct inode *inodep, struct file *filep)$/;"	f	file:
+fops	bpmp-host-proxy.c	/^static struct file_operations fops =$/;"	v	typeref:struct:file_operations	file:
+init_module	bpmp-host-proxy.c	/^int init_module(void)$/;"	f
+main	user-test.c	/^int main(int argc, char *argv[])$/;"	f
+major_number	bpmp-host-proxy.c	/^static int major_number;$/;"	v	file:
+open	bpmp-host-proxy.c	/^static int open(struct inode *inodep, struct file *filep)$/;"	f	file:
+read	bpmp-host-proxy.c	/^static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset)$/;"	f	file:
+write	bpmp-host-proxy.c	/^static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t *offset)$/;"	f	file:
