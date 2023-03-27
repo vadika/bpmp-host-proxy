@@ -10,8 +10,12 @@
 #include <linux/kernel.h>	  // Kernel header for convenient functions.
 #include <linux/fs.h>		  // File-system support.
 #include <linux/uaccess.h>	  // User access copy function support.
+#include <linux/slab.h>
+#include <soc/tegra/bpmp.h>
+#include "ftrace_helper.h"
+
 #define DEVICE_NAME "bpmp-host" // Device name.
-#define CLASS_NAME "char"	  ///< The device class -- this is a character device driver
+#define CLASS_NAME "char"	  /// < The device class -- this is a character device driver
 
 MODULE_LICENSE("GPL");						 ///< The license type -- this affects available functionality
 MODULE_AUTHOR("Vadim Likholetov");					 ///< The author -- visible when you use modinfo
@@ -46,11 +50,35 @@ static struct file_operations fops =
 		.write = write,
 };
 
+
+
+
+struct tegra_bpmp *(*orig_tegra_bpmp_get)(struct device *dev);
+
+struct tegra_bpmp *bpmp=NULL;
+
+struct tegra_bpmp *hook_tegra_bpmp_get(struct device *dev)
+{
+
+	printk("bpmp-host-proxy: hooked the bpmp");
+	bpmp = orig_tegra_bpmp_get(dev);
+
+	return bpmp;
+}
+
+
+static struct ftrace_hook hooks[] = {
+    HOOK("tegra_bpmp_get", hook_tegra_bpmp_get, &orig_tegra_bpmp_get),
+};
+
+
 /**
  * Initializes module at installation
  */
 int init_module(void)
 {
+	int err;
+	
 	printk(KERN_INFO "bpmp-host-proxy: installing module.\n");
 
 	// Allocate a major number for the device.
@@ -83,8 +111,18 @@ int init_module(void)
 	}
 	printk(KERN_INFO "bpmp-host-proxy: device class created correctly\n"); // Made it! device was initialized
 
+
+    err = fh_install_hooks(hooks, ARRAY_SIZE(hooks));
+
+    if(err) {
+		printk("bpmp-install_hooks: can't install kernel hooks ");
+	    return err;
+	}
+
 	return 0;
 }
+
+
 
 /*
  * Removes module, sends appropriate message to kernel
@@ -92,6 +130,7 @@ int init_module(void)
 void cleanup_module(void)
 {
 	printk(KERN_INFO "bpmp-host-proxy: removing module.\n");
+	fh_remove_hooks(hooks, ARRAY_SIZE(hooks));
 	device_destroy(bpmp_host_proxy_class, MKDEV(major_number, 0)); // remove the device
 	class_unregister(bpmp_host_proxy_class);						  // unregister the device class
 	class_destroy(bpmp_host_proxy_class);						  // remove the device class
@@ -131,6 +170,10 @@ static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset
 /*
  * Writes to the device
  */
+
+
+extern int tegra_bpmp_transfer(struct tegra_bpmp *, struct tegra_bpmp_message *);
+
 static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t *offset)
 {
 
@@ -145,20 +188,20 @@ static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t 
 
 	printk(" wants to write %zu bytes\n", len);
 
+	if (len!=sizeof(struct tegra_bpmp_message ))
+	{
+		printk("bpmp-host: message size %zu != %zu", len, sizeof(struct tegra_bpmp_message));
+		goto out_notok;
+	}
+
 	ret = -ENOMEM;
-	kbuf = kvmalloc(len, GFP_KERNEL);
+	kbuf = kmalloc(len, GFP_KERNEL);
+
 	if (!kbuf)
 		goto out_nomem;
 
 	memset(kbuf, 0, len);
 
-	/* Copy in the user supplied buffer 'ubuf' - the data content to write -
-	 * via the copy_from_user() macro.
-	 * (FYI, the copy_from_user() macro is the *right* way to copy data from
-	 * userspace to kernel-space; the parameters are:
-	 *  'to-buffer', 'from-buffer', count
-	 *  Returns 0 on success, i.e., non-zero return implies an I/O fault).
-	 */
 
 	ret = -EFAULT;
 	
@@ -167,18 +210,21 @@ static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t 
 		goto out_cfu;
 	}
 
-	printk("read %s ", (char *)kbuf);
+	ret = tegra_bpmp_transfer(bpmp, (struct tegra_bpmp_message *)kbuf);
 
 
-	if (copy_to_user((void *)buffer, "another one bites the dust", 26)) {
+	if (copy_to_user((void *)buffer, kbuf, len)) {
 		printk("copy_to_user() failed\n");
 		goto out_notok;
 	}
 
+	kfree(kbuf);
 	return len;
 out_notok:
 out_nomem:
 out_cfu:
+	kfree(kbuf);
     return -EINVAL;
 
 }
+
