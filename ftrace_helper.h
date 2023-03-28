@@ -23,7 +23,7 @@ static struct kprobe kp = {
 };
 #endif
 
-#define USE_FENTRY_OFFSET 0
+#define USE_FENTRY_OFFSET 1
 #if !USE_FENTRY_OFFSET
 #pragma GCC optimize("-fno-optimize-sibling-calls")
 #endif
@@ -50,7 +50,7 @@ static int fh_resolve_hook_address(struct ftrace_hook *hook)
 
     if (!hook->address)
     {
-        printk(KERN_DEBUG "cdrom hook: unresolved symbol: %s\n", hook->name);
+        printk(KERN_DEBUG "ftrace hook: unresolved symbol: %s\n", hook->name);
         return -ENOENT;
     }
 
@@ -68,7 +68,11 @@ static void notrace fh_ftrace_thunk(unsigned long ip, unsigned long parent_ip, s
     struct ftrace_hook *hook = container_of(ops, struct ftrace_hook, ops);
 
 #if USE_FENTRY_OFFSET
-    regs->ip = (unsigned long) hook->function;
+    #if defined(CONFIG_X86_64)  
+        regs->ip = (unsigned long) hook->function;
+     #else
+        regs->pc = (unsigned long) hook->function;
+     #endif
 #else
     if(!within_module(parent_ip, THIS_MODULE))
      #if defined(CONFIG_X86_64)  
@@ -91,17 +95,17 @@ int fh_install_hook(struct ftrace_hook *hook)
             | FTRACE_OPS_FL_RECURSION_SAFE
             | FTRACE_OPS_FL_IPMODIFY;
 
-    err = ftrace_set_filter_ip(&hook->ops, hook->address, 0, 0);
+    err = ftrace_set_filter(&hook->ops, hook->address, 0, 0);
     if(err)
     {
-        printk(KERN_DEBUG "cdrom hook: ftrace_set_filter_ip() failed: %d\n", err);
+        printk(KERN_DEBUG "ftrace hook: ftrace_set_filter_ip() failed: %d\n", err);
         return err;
     }
 
     err = register_ftrace_function(&hook->ops);
     if(err)
     {
-        printk(KERN_DEBUG "cdrom hook: register_ftrace_function() failed: %d\n", err);
+        printk(KERN_DEBUG "ftrace hook: register_ftrace_function() failed: %d\n", err);
         return err;
     }
 
@@ -114,13 +118,13 @@ void fh_remove_hook(struct ftrace_hook *hook)
     err = unregister_ftrace_function(&hook->ops);
     if(err)
     {
-        printk(KERN_DEBUG "cdrom hook: unregister_ftrace_function() failed: %d\n", err);
+        printk(KERN_DEBUG "ftrace hook: unregister_ftrace_function() failed: %d\n", err);
     }
 
-    err = ftrace_set_filter_ip(&hook->ops, hook->address, 1, 0);
+    err = ftrace_set_filter(&hook->ops, hook->address, 1, 0);
     if(err)
     {
-        printk(KERN_DEBUG "cdrom hook: ftrace_set_filter_ip() failed: %d\n", err);
+        printk(KERN_DEBUG "ftrace hook: ftrace_set_filter_ip() failed: %d\n", err);
     }
 }
 

@@ -8,7 +8,7 @@
 #include <unistd.h>
 // #include "bpmp.h"
 
-#define BUFFER_LENGTH 256           ///< The buffer length (crude but fine)
+#define BUFFER_LENGTH 48           ///< The buffer length (crude but fine)
 
 
 #include <stdio.h>

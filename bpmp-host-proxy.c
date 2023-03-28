@@ -12,7 +12,6 @@
 #include <linux/uaccess.h>	  // User access copy function support.
 #include <linux/slab.h>
 #include <soc/tegra/bpmp.h>
-#include "ftrace_helper.h"
 
 #define DEVICE_NAME "bpmp-host" // Device name.
 #define CLASS_NAME "char"	  /// < The device class -- this is a character device driver
@@ -53,31 +52,12 @@ static struct file_operations fops =
 
 
 
-struct tegra_bpmp *(*orig_tegra_bpmp_get)(struct device *dev);
-
-struct tegra_bpmp *bpmp=NULL;
-
-struct tegra_bpmp *hook_tegra_bpmp_get(struct device *dev)
-{
-
-	printk("bpmp-host-proxy: hooked the bpmp");
-	bpmp = orig_tegra_bpmp_get(dev);
-
-	return bpmp;
-}
-
-
-static struct ftrace_hook hooks[] = {
-    HOOK("tegra_bpmp_get", hook_tegra_bpmp_get, &orig_tegra_bpmp_get),
-};
-
-
 /**
  * Initializes module at installation
  */
 int init_module(void)
 {
-	int err;
+
 	
 	printk(KERN_INFO "bpmp-host-proxy: installing module.\n");
 
@@ -112,13 +92,6 @@ int init_module(void)
 	printk(KERN_INFO "bpmp-host-proxy: device class created correctly\n"); // Made it! device was initialized
 
 
-    err = fh_install_hooks(hooks, ARRAY_SIZE(hooks));
-
-    if(err) {
-		printk("bpmp-install_hooks: can't install kernel hooks ");
-	    return err;
-	}
-
 	return 0;
 }
 
@@ -130,7 +103,6 @@ int init_module(void)
 void cleanup_module(void)
 {
 	printk(KERN_INFO "bpmp-host-proxy: removing module.\n");
-	fh_remove_hooks(hooks, ARRAY_SIZE(hooks));
 	device_destroy(bpmp_host_proxy_class, MKDEV(major_number, 0)); // remove the device
 	class_unregister(bpmp_host_proxy_class);						  // unregister the device class
 	class_destroy(bpmp_host_proxy_class);						  // remove the device class
@@ -173,6 +145,7 @@ static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset
 
 
 extern int tegra_bpmp_transfer(struct tegra_bpmp *, struct tegra_bpmp_message *);
+extern struct tegra_bpmp *tegra_bpmp_host_device;
 
 static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t *offset)
 {
@@ -210,7 +183,12 @@ static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t 
 		goto out_cfu;
 	}
 
-	ret = tegra_bpmp_transfer(bpmp, (struct tegra_bpmp_message *)kbuf);
+	if(!tegra_bpmp_host_device){
+		printk("bpmp-host: host device not initialised, can't do transfer!");
+		return -EFAULT;
+	}
+
+	ret = tegra_bpmp_transfer(tegra_bpmp_host_device, (struct tegra_bpmp_message *)kbuf);
 
 
 	if (copy_to_user((void *)buffer, kbuf, len)) {
