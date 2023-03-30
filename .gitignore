@@ -1,0 +1,14 @@
+.bpmp-host-proxy.ko.cmd
+.bpmp-host-proxy.mod.cmd
+.bpmp-host-proxy.mod.o.cmd
+.bpmp-host-proxy.o.cmd
+.Module.symvers.cmd
+.modules.order.cmd
+bpmp-host-proxy.ko
+bpmp-host-proxy.mod
+bpmp-host-proxy.mod.c
+bpmp-host-proxy.mod.o
+bpmp-host-proxy.o
+Module.symvers
+modules.order
+user-test

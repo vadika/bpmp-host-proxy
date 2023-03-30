@@ -1,0 +1,94 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BUFFER_LENGTH	user-test.c	11;"	d	file:
+CLASS_NAME	bpmp-host-proxy.c	17;"	d	file:
+DEVICE_NAME	bpmp-host-proxy.c	16;"	d	file:
+HOOK	ftrace_helper.h	11;"	d
+INCLUDE_VERMAGIC	bpmp-host-proxy.mod.c	2;"	d	file:
+KERNEL_INCLUDES	Makefile	/^KERNEL_INCLUDES = \\$/;"	m
+KPROBE_LOOKUP	ftrace_helper.h	19;"	d
+LIST_HEAD	bpmp.h	31;"	d
+LIST_HEAD_INIT	bpmp.h	29;"	d
+PTREGS_SYSCALL_STUBS	ftrace_helper.h	8;"	d
+USE_FENTRY_OFFSET	ftrace_helper.h	26;"	d
+__BPMP__H__	bpmp.h	3;"	d
+address	ftrace_helper.h	/^    unsigned long address;$/;"	m	struct:ftrace_hook
+allocated	bpmp.h	/^		unsigned long *allocated;$/;"	m	struct:tegra_bpmp::__anon4
+arch_spinlock_t	bpmp.h	/^typedef struct { } arch_spinlock_t;$/;"	t	typeref:struct:__anon1
+atomic_tx_lock	bpmp.h	/^	spinlock_t atomic_tx_lock;$/;"	m	struct:tegra_bpmp
+bool	bpmp.h	/^typedef unsigned char bool; \/\/not sure, need to check!$/;"	t
+bpmp_host_proxy_class	bpmp-host-proxy.c	/^static struct class *bpmp_host_proxy_class = NULL;	\/\/\/< The device-driver class struct pointer$/;"	v	typeref:struct:class	file:
+bpmp_host_proxy_device	bpmp-host-proxy.c	/^static struct device *bpmp_host_proxy_device = NULL; \/\/\/< The device-driver device struct pointer$/;"	v	typeref:struct:device	file:
+busy	bpmp.h	/^		unsigned long *busy;$/;"	m	struct:tegra_bpmp::__anon4
+channel	bpmp.h	/^		struct mbox_chan *channel;$/;"	m	struct:tegra_bpmp::__anon3	typeref:struct:tegra_bpmp::__anon3::mbox_chan
+cleanup_module	bpmp-host-proxy.c	/^void cleanup_module(void)$/;"	f
+client	bpmp.h	/^		struct mbox_client client;$/;"	m	struct:tegra_bpmp::__anon3	typeref:struct:tegra_bpmp::__anon3::mbox_client
+clocks	bpmp.h	/^	struct tegra_bpmp_clk **clocks;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::tegra_bpmp_clk
+close	bpmp-host-proxy.c	/^static int close(struct inode *inodep, struct file *filep)$/;"	f	file:
+count	bpmp.h	/^		unsigned int count;$/;"	m	struct:tegra_bpmp::__anon4
+count	bpmp.h	/^	unsigned int		count;$/;"	m	struct:semaphore
+data	bpmp.h	/^		const void *data;$/;"	m	struct:tegra_bpmp_message::__anon5
+data	bpmp.h	/^		void *data;$/;"	m	struct:tegra_bpmp_message::__anon6
+dev	bpmp.h	/^	struct device *dev;$/;"	m	struct:mbox_client	typeref:struct:mbox_client::device
+dev	bpmp.h	/^	struct device *dev;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::device
+fh_ftrace_thunk	ftrace_helper.h	/^static void notrace fh_ftrace_thunk(unsigned long ip, unsigned long parent_ip, struct ftrace_ops *ops, struct pt_regs *regs)$/;"	f
+fh_install_hook	ftrace_helper.h	/^int fh_install_hook(struct ftrace_hook *hook)$/;"	f
+fh_install_hooks	ftrace_helper.h	/^int fh_install_hooks(struct ftrace_hook *hooks, size_t count)$/;"	f
+fh_remove_hook	ftrace_helper.h	/^void fh_remove_hook(struct ftrace_hook *hook)$/;"	f
+fh_remove_hooks	ftrace_helper.h	/^void fh_remove_hooks(struct ftrace_hook *hooks, size_t count)$/;"	f
+fh_resolve_hook_address	ftrace_helper.h	/^static int fh_resolve_hook_address(struct ftrace_hook *hook)$/;"	f
+fops	bpmp-host-proxy.c	/^static struct file_operations fops =$/;"	v	typeref:struct:file_operations	file:
+ftrace_hook	ftrace_helper.h	/^struct ftrace_hook {$/;"	s
+function	ftrace_helper.h	/^    void *function;$/;"	m	struct:ftrace_hook
+genpd	bpmp.h	/^	struct genpd_onecell_data genpd;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::genpd_onecell_data
+hexDump	user-test.c	/^void hexDump ($/;"	f
+init_module	bpmp-host-proxy.c	/^int init_module(void)$/;"	f
+knows_txdone	bpmp.h	/^	bool knows_txdone;$/;"	m	struct:mbox_client
+kp	ftrace_helper.h	/^static struct kprobe kp = {$/;"	v	typeref:struct:kprobe
+lock	bpmp.h	/^		struct semaphore lock;$/;"	m	struct:tegra_bpmp::__anon4	typeref:struct:tegra_bpmp::__anon4::semaphore
+lock	bpmp.h	/^	raw_spinlock_t		lock;$/;"	m	struct:semaphore
+lock	bpmp.h	/^	spinlock_t lock;$/;"	m	struct:tegra_bpmp
+main	user-test.c	/^int main(int argc, char *argv[])$/;"	f
+major_number	bpmp-host-proxy.c	/^static int major_number;$/;"	v	file:
+mbox	bpmp.h	/^	} mbox;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::__anon3
+mbox_client	bpmp.h	/^struct mbox_client {$/;"	s
+mrq	bpmp.h	/^	unsigned int mrq;$/;"	m	struct:tegra_bpmp_message
+mrqs	bpmp.h	/^	struct list_head mrqs;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::list_head
+name	ftrace_helper.h	/^    const char *name;$/;"	m	struct:ftrace_hook
+num_clocks	bpmp.h	/^	unsigned int num_clocks;$/;"	m	struct:tegra_bpmp
+open	bpmp-host-proxy.c	/^static int open(struct inode *inodep, struct file *filep)$/;"	f	file:
+ops	ftrace_helper.h	/^    struct ftrace_ops ops;$/;"	m	struct:ftrace_hook	typeref:struct:ftrace_hook::ftrace_ops
+original	ftrace_helper.h	/^    void *original;$/;"	m	struct:ftrace_hook
+priv	bpmp.h	/^	void *priv;$/;"	m	struct:tegra_bpmp
+raw_lock	bpmp.h	/^	arch_spinlock_t raw_lock;$/;"	m	struct:raw_spinlock
+raw_spinlock	bpmp.h	/^typedef struct raw_spinlock {$/;"	s
+raw_spinlock_t	bpmp.h	/^} raw_spinlock_t;$/;"	t	typeref:struct:raw_spinlock
+read	bpmp-host-proxy.c	/^static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset)$/;"	f	file:
+ret	bpmp.h	/^		int ret;$/;"	m	struct:tegra_bpmp_message::__anon6
+rlock	bpmp.h	/^		struct raw_spinlock rlock;$/;"	m	union:spinlock::__anon2	typeref:struct:spinlock::__anon2::raw_spinlock
+rstc	bpmp.h	/^	struct reset_controller_dev rstc;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::reset_controller_dev
+rx	bpmp.h	/^	} rx;$/;"	m	struct:tegra_bpmp_message	typeref:struct:tegra_bpmp_message::__anon6
+rx_callback	bpmp.h	/^	void (*rx_callback)(struct mbox_client *cl, void *mssg);$/;"	m	struct:mbox_client
+rx_channel	bpmp.h	/^	struct tegra_bpmp_channel *tx_channel, *rx_channel, *threaded_channels;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::
+semaphore	bpmp.h	/^struct semaphore {$/;"	s
+size	bpmp.h	/^		size_t size;$/;"	m	struct:tegra_bpmp_message::__anon5
+size	bpmp.h	/^		size_t size;$/;"	m	struct:tegra_bpmp_message::__anon6
+soc	bpmp.h	/^	const struct tegra_bpmp_soc *soc;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::tegra_bpmp_soc
+spinlock	bpmp.h	/^typedef struct spinlock {$/;"	s
+spinlock_t	bpmp.h	/^} spinlock_t;$/;"	t	typeref:struct:spinlock
+tegra_bpmp	bpmp.h	/^struct tegra_bpmp {$/;"	s
+tegra_bpmp_message	bpmp.h	/^struct tegra_bpmp_message {$/;"	s
+threaded	bpmp.h	/^	} threaded;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::__anon4
+threaded_channels	bpmp.h	/^	struct tegra_bpmp_channel *tx_channel, *rx_channel, *threaded_channels;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::
+tx	bpmp.h	/^	} tx;$/;"	m	struct:tegra_bpmp_message	typeref:struct:tegra_bpmp_message::__anon5
+tx_block	bpmp.h	/^	bool tx_block;$/;"	m	struct:mbox_client
+tx_channel	bpmp.h	/^	struct tegra_bpmp_channel *tx_channel, *rx_channel, *threaded_channels;$/;"	m	struct:tegra_bpmp	typeref:struct:tegra_bpmp::tegra_bpmp_channel
+tx_done	bpmp.h	/^	void (*tx_done)(struct mbox_client *cl, void *mssg, int r);$/;"	m	struct:mbox_client
+tx_prepare	bpmp.h	/^	void (*tx_prepare)(struct mbox_client *cl, void *mssg);$/;"	m	struct:mbox_client
+tx_tout	bpmp.h	/^	unsigned long tx_tout;$/;"	m	struct:mbox_client
+wait_list	bpmp.h	/^	struct list_head	wait_list;$/;"	m	struct:semaphore	typeref:struct:semaphore::list_head
+write	bpmp-host-proxy.c	/^static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t *offset)$/;"	f	file:

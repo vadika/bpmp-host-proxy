@@ -147,11 +147,17 @@ static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset
 extern int tegra_bpmp_transfer(struct tegra_bpmp *, struct tegra_bpmp_message *);
 extern struct tegra_bpmp *tegra_bpmp_host_device;
 
+#define BUF_SIZE 1024 
+
 static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t *offset)
 {
 
 	int ret = len;
-	void *kbuf = NULL;
+	struct tegra_bpmp_message *kbuf = NULL;
+	void *txbuf = NULL;
+	void *rxbuf = NULL;
+	void *usertxbuf = NULL;
+	void *userrxbuf = NULL;
 
 	if (len > 65535) {	/* paranoia */
 		printk("count %zu exceeds max # of bytes allowed, "
@@ -169,19 +175,39 @@ static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t 
 
 	ret = -ENOMEM;
 	kbuf = kmalloc(len, GFP_KERNEL);
+	txbuf = kmalloc(BUF_SIZE, GFP_KERNEL);
+	rxbuf = kmalloc(BUF_SIZE, GFP_KERNEL);
 
-	if (!kbuf)
+	if (!kbuf || !txbuf || !rxbuf)
 		goto out_nomem;
 
 	memset(kbuf, 0, len);
-
+	memset(txbuf, 0, len);
+	memset(rxbuf, 0, len);
 
 	ret = -EFAULT;
 	
 	if (copy_from_user(kbuf, buffer, len)) {
-		printk("copy_from_user() failed\n");
+		printk("copy_from_user(1) failed\n");
 		goto out_cfu;
 	}
+
+	if (copy_from_user(txbuf, buffer, kbuf->tx.size)) {
+		printk("copy_from_user(2) failed\n");
+		goto out_cfu;
+	}
+
+	if (copy_from_user(rxbuf, buffer, kbuf->rx.size)) {
+		printk("copy_from_user(3) failed\n");
+		goto out_cfu;
+	}	
+
+	usertxbuf=kbuf->tx.data; //save userspace buffers addresses
+	userrxbuf=kbuf->rx.data;
+
+	kbuf->tx.data=txbuf; //reassing to kernel space buffers
+	kbuf->rx.data=rxbuf;
+
 
 	if(!tegra_bpmp_host_device){
 		printk("bpmp-host: host device not initialised, can't do transfer!");
@@ -191,17 +217,36 @@ static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t 
 	ret = tegra_bpmp_transfer(tegra_bpmp_host_device, (struct tegra_bpmp_message *)kbuf);
 
 
-	if (copy_to_user((void *)buffer, kbuf, len)) {
-		printk("copy_to_user() failed\n");
+
+	if (copy_to_user((void *)usertxbuf, kbuf->tx.data, kbuf->tx.size)) {
+		printk("copy_to_user(2) failed\n");
 		goto out_notok;
 	}
+
+	if (copy_to_user((void *)userrxbuf, kbuf->rx.data, kbuf->rx.size)) {
+		printk("copy_to_user(3) failed\n");
+		goto out_notok;
+	}
+
+	kbuf->tx.data=usertxbuf;
+	kbuf->rx.data=userrxbuf;
+	
+	if (copy_to_user((void *)buffer, kbuf, len)) {
+		printk("copy_to_user(1) failed\n");
+		goto out_notok;
+	}
+
+
 
 	kfree(kbuf);
 	return len;
 out_notok:
 out_nomem:
+	printk ("memory allocation failed");
 out_cfu:
 	kfree(kbuf);
+	kfree(txbuf);
+	kfree(rxbuf);
     return -EINVAL;
 
 }
